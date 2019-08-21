@@ -37,9 +37,9 @@ public class WordCountDriver {
         job.setOutputValueClass(IntWritable.class);
 
         // 设置输入数据和输出数据的路径
+
         FileInputFormat.setInputPaths(job, "/user/atguigu/jj.txt");
         FileOutputFormat.setOutputPath(job, new Path("/rrr/rrr"));
-
         // 提交
         boolean result = job.waitForCompletion(true);
         System.exit(result?0:1);
