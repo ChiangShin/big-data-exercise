@@ -20,8 +20,8 @@ import org.junit.Test;
 public class KafkaDemo {
     private final static String TOPIC = "first_topic";
     private final static String GROUP_ID = "chiangshin_1";
-//    private final static String BOOTSTRAP = "hadoop100:9092,hadoop101:9092,hadoop102:9092";
-    private final static String BOOTSTRAP = "172.18.102.111:9092,172.18.102.112:9092,172.18.102.113:9092";
+    public final static String BOOTSTRAP = "hadoop100:9092,hadoop101:9092,hadoop102:9092";
+    //public final static String BOOTSTRAP = "172.18.102.111:9092,172.18.102.112:9092,172.18.102.113:9092";
 
     private Producer<String,String> createProducer() {
         Properties props = new Properties();
