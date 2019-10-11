@@ -20,14 +20,15 @@ import org.junit.Test;
 public class KafkaDemo {
     private final static String TOPIC = "first_topic";
     private final static String GROUP_ID = "chiangshin_1";
+//    private final static String BOOTSTRAP = "hadoop100:9092,hadoop101:9092,hadoop102:9092";
+    private final static String BOOTSTRAP = "172.18.102.111:9092,172.18.102.112:9092,172.18.102.113:9092";
 
     private Producer<String,String> createProducer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "hadoop100:9092,hadoop101:9092,hadoop102:9092");
+        props.put("bootstrap.servers", BOOTSTRAP);
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
-        props.put("zookeeper.coonect", "hadoop102:2181,hadoop103:2181,hadoop104:2181");
         props.put("key.serializer", StringSerializer.class.getName());
         props.put("value.serializer", StringSerializer.class.getName());
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(props);
@@ -36,8 +37,9 @@ public class KafkaDemo {
 
     private Consumer createConsumer(){
         Properties props = new Properties();
-        props.put("bootstrap.servers", "hadoop100:9092,hadoop101:9092,hadoop102:9092");
+        props.put("bootstrap.servers", BOOTSTRAP);
         props.put("group.id", GROUP_ID);
+        props.put("auto.offset.reset","earliest");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -66,12 +68,12 @@ public class KafkaDemo {
 
     @Test
     public void consumer1(){
-
+        new Thread(()->product1()).start();
         Consumer consumer = createConsumer();
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> msg : records) {
-                System.out.println("consumer   ###   key:"+msg.key()+" value:"+msg.value());
+                System.out.println("consumer   ###   topic:"+ msg.topic()+"  key:"+msg.key()+" value:"+msg.value());
             }
         }
     }
