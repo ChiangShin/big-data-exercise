@@ -1,6 +1,8 @@
 package com.chiangshin.kafka;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -9,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
@@ -31,6 +34,12 @@ public class KafkaDemo {
         props.put("batch.size", 16384);
         props.put("key.serializer", StringSerializer.class.getName());
         props.put("value.serializer", StringSerializer.class.getName());
+
+        // 2 构建拦截链
+        List<String> interceptors = new ArrayList<>();
+        interceptors.add("com.chiangshin.kafka.KafkaInterceptorDemo");
+        props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
+
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(props);
         return producer;
     }
@@ -44,6 +53,7 @@ public class KafkaDemo {
         props.put("auto.commit.interval.ms", "1000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
         consumer.subscribe(Arrays.asList(TOPIC));
         return consumer;
@@ -66,6 +76,8 @@ public class KafkaDemo {
         }
     }
 
+
+
     @Test
     public void consumer1(){
         new Thread(()->product1()).start();
@@ -78,7 +90,5 @@ public class KafkaDemo {
         }
     }
 
-    public static void main(String[] args) {
 
-    }
 }
